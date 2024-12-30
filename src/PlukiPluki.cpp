@@ -15,7 +15,7 @@ __amountRows PlukiPluki::
         /*
          * Я ещё глупенький
          * TODO: Найти какой нибудь другой способ
-        */
+         */
         std::string tmp;
         while(*file >> tmp)
         {
@@ -33,7 +33,7 @@ __amountRows PlukiPluki::
     {
         /*
          * Какая-то защита ...
-        */
+         */
 
         __amountRows amount = _countRowsInFile(_file);
 
@@ -70,7 +70,7 @@ std::string PlukiPluki::
         /*
          * Warning: Здесь всё защита в плане существования файла 
          *          проверяется в методе getAmountRows
-        */
+         */
 
         __amountRows amountRows = getAmountRows();
         if (index >= amountRows)
