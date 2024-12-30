@@ -140,6 +140,18 @@ void FileBase::
         }
     }
 
+std::string FileBase::
+    getPath() const
+    {
+        return _path;
+    }
+
+std::fstream* FileBase::
+    getFile() const
+    {
+        return _file;
+    }
+
 bool FileBase::
     isExistsFile(std::string path)
     {

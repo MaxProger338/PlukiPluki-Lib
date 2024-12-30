@@ -37,6 +37,10 @@ namespace PlukiPlukiLib
 
             ~FileBase();
 
+            std::string getPath() const;
+
+            std::fstream* getFile() const;
+
             static bool isExistsFile(std::string path);
     };
 };
