@@ -9,7 +9,11 @@ clang++ -c ../../src/PlukiPluki.cpp -o ../../bin/PlukiPluki.o -I ../../include
 ```
 
 ```bash
-ar rcs ../../bin/PlukiPluki.a ../../bin/PlukiPluki.o
+clang++ -c ../../src/core/FileBase.cpp -o ../../bin/FileBase.o
+```
+
+```bash
+ar rcs ../../bin/PlukiPluki.a ../../bin/PlukiPluki.o ../../bin/FileBase.o 
 ```
 
 ```bash
