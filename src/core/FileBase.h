@@ -8,21 +8,23 @@
 
 namespace PlukiPlukiLib
 {
+    typedef short __fileStatus;
+
     class FileBase
     {
         protected:
             std::string   _path;
             std::fstream* _file;
 
-            short _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
+            __fileStatus _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
             
             void  _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
 
-            short _closeFile(std::fstream*& file);
+            __fileStatus _closeFile(std::fstream*& file);
 
             void  _checkCloseFile(std::fstream*& file);
 
-            short _reopen(std::fstream*& file, const std::_Ios_Openmode& mode);
+            __fileStatus _reopen(std::fstream*& file, const std::_Ios_Openmode& mode);
 
             void  _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode);
 

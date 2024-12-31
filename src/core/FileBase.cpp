@@ -37,7 +37,7 @@ FileBase::
         _path = "";
     }
 
-short FileBase::
+__fileStatus FileBase::
     _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
     {
         if (!isExistsFile(path))
@@ -64,7 +64,7 @@ short FileBase::
 void FileBase::
     _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
     {
-        short status = _openFile(file, path, mode);
+        __fileStatus status = _openFile(file, path, mode);
 
         switch (status)
         {
@@ -85,7 +85,7 @@ void FileBase::
         }
     }
 
-short FileBase::
+__fileStatus FileBase::
     _closeFile(std::fstream*& file)
     {
         /*
@@ -123,7 +123,7 @@ short FileBase::
 void FileBase::
     _checkCloseFile(std::fstream*& file)
     {
-        short status = _closeFile(file);
+        __fileStatus status = _closeFile(file);
 
         switch (status)
         {
@@ -144,17 +144,17 @@ void FileBase::
         }
     }
 
-short FileBase::
+__fileStatus FileBase::
     _reopen(std::fstream*& file, const std::_Ios_Openmode& mode)
     {
-        short closeStatus = _closeFile(file);
+        __fileStatus closeStatus = _closeFile(file);
 
         if (closeStatus != 0)
         {
             return closeStatus;
         }
 
-        short openStatus = _openFile(file, _path, mode);
+        __fileStatus openStatus = _openFile(file, _path, mode);
 
         return openStatus;
     }
@@ -162,7 +162,7 @@ short FileBase::
 void  FileBase::
     _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode)
     {
-        short reopenStatus = _reopen(file, mode);
+        __fileStatus reopenStatus = _reopen(file, mode);
 
         switch (reopenStatus)
         {
