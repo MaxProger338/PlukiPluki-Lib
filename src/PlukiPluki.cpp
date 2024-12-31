@@ -3,9 +3,8 @@
 using namespace PlukiPlukiLib;
 
 PlukiPluki::
-    PlukiPluki(std::string path):
-        FileBase(path) {}
-
+    PlukiPluki(std::string path, const std::_Ios_Openmode& mode):
+        FileBase(path, mode) {}
 
 __amountRows PlukiPluki::
     _countRowsInFile(std::fstream* file) const

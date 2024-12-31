@@ -6,7 +6,7 @@
 #include <exception>
 #include <string>
 
-#define DEBUG_MODE
+//! #define DEBUG_MODE
 
 #ifdef DEBUG_MODE
 
@@ -28,12 +28,11 @@ namespace PlukiPlukiLib
             std::string     _getRowByIndex    (std::fstream* file, __amountRows index) const;
 
         public:
-            PlukiPluki(std::string path);
+            PlukiPluki(std::string path, const std::_Ios_Openmode& mode);
 
             __amountRows getAmountRows()                                               const;
 
             std::string  getRowByIndex(__amountRows index)                             const;
-
 
             std::string  operator[](__amountRows index)                                const;
     };

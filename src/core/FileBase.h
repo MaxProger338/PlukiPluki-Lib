@@ -4,6 +4,7 @@
 #include <fstream>
 #include <exception>
 #include <filesystem>
+#include <iostream>
 
 namespace PlukiPlukiLib
 {
@@ -13,16 +14,20 @@ namespace PlukiPlukiLib
             std::string   _path;
             std::fstream* _file;
 
-            short _openFile(std::fstream*& file, std::string path);
+            short _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
             
-            void  _checkOpenFile(std::fstream*& file, std::string path);
+            void  _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
 
             short _closeFile(std::fstream*& file);
 
             void  _checkCloseFile(std::fstream*& file);
 
+            short _reopen(std::fstream*& file, const std::_Ios_Openmode& mode);
+
+            void  _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode);
+
         public:
-            FileBase(std::string path);
+            FileBase(std::string path, const std::_Ios_Openmode& mode);
 
             /*
              * TODO: Поразмышлять на тему удаления конструкторов и операторов присвоения
@@ -36,6 +41,8 @@ namespace PlukiPlukiLib
             FileBase operator=(FileBase&& fileBase)      = delete;
 
             ~FileBase();
+
+            void reopen(const std::_Ios_Openmode& mode);
 
             std::string getPath() const;
 

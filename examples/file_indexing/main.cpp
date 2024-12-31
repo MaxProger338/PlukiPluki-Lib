@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 {
     try
     {
-        PlukiPluki file("data/data.txt");
+        PlukiPluki file("data/data.txt", std::ios::in);
 
         std::cout << file[0] << '\n';
         std::cout << file[1] << '\n';
