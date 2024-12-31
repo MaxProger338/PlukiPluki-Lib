@@ -16,6 +16,8 @@ namespace PlukiPlukiLib
             std::string   _path;
             std::fstream* _file;
 
+            std::string _getErrorMsgByStatus(__fileStatus status) const;
+
             __fileStatus _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
             
             void  _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);

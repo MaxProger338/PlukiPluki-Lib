@@ -37,6 +37,21 @@ FileBase::
         _path = "";
     }
 
+std::string FileBase::
+    _getErrorMsgByStatus(__fileStatus status) const
+    {
+        switch (status)
+        {
+            case 0: /* Success */
+            case 1: return "File not exists!";
+            case 2: return "File already is opened!";
+            case 3: return "File is equals nullptr!";
+            case 4: return "File already is closed!";
+
+            default: return "Unknow file error!";
+        }
+    }
+
 __fileStatus FileBase::
     _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
     {
@@ -64,24 +79,11 @@ __fileStatus FileBase::
 void FileBase::
     _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
     {
-        __fileStatus status = _openFile(file, path, mode);
+        __fileStatus openStatus = _openFile(file, path, mode);
 
-        switch (status)
+        if (openStatus != 0)
         {
-            case 0:
-                /* Success */
-                break;
-
-            case 1:
-                throw std::runtime_error("File not exists!");    
-                break;
-
-            case 2:
-                throw std::runtime_error("File already is opened!");
-                break;
-
-            default:
-                throw std::runtime_error("Unknow file error!");
+            throw std::runtime_error(_getErrorMsgByStatus(openStatus));
         }
     }
 
@@ -123,24 +125,11 @@ __fileStatus FileBase::
 void FileBase::
     _checkCloseFile(std::fstream*& file)
     {
-        __fileStatus status = _closeFile(file);
+        __fileStatus closeStatus = _closeFile(file);
 
-        switch (status)
+        if (closeStatus != 0)
         {
-            case 0:
-                /* Success */
-                break;
-
-            case 3:
-                throw std::runtime_error("File is equals nullptr!");    
-                break;
-
-            case 4:
-                throw std::runtime_error("File already is closed!");    
-                break;
-
-            default:
-                throw std::runtime_error("Unknow file error!");
+            throw std::runtime_error(_getErrorMsgByStatus(closeStatus));
         }
     }
 
@@ -164,30 +153,9 @@ void  FileBase::
     {
         __fileStatus reopenStatus = _reopen(file, mode);
 
-        switch (reopenStatus)
+        if (reopenStatus != 0)
         {
-            case 0:
-                /* Success */
-                break;
-
-            case 1:
-                throw std::runtime_error("File not exists!");    
-                break;
-
-            case 2:
-                throw std::runtime_error("File already is opened!");
-                break;
-
-            case 3:
-                throw std::runtime_error("File is equals nullptr!");    
-                break;
-
-            case 4:
-                throw std::runtime_error("File already is closed!");    
-                break;
-
-            default:
-                throw std::runtime_error("Unknow file error!");
+            throw std::runtime_error(_getErrorMsgByStatus(reopenStatus));
         }
     }
 
