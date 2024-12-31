@@ -13,22 +13,23 @@ namespace PlukiPlukiLib
     class FileBase
     {
         protected:
-            std::string   _path;
-            std::fstream* _file;
+            std::string         _path;
+            std::_Ios_Openmode* _mode;
+            std::fstream*       _file;
 
-            std::string _getErrorMsgByStatus(__fileStatus status) const;
+            std::string  _getErrorMsgByStatus(__fileStatus status) const;
 
-            __fileStatus _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
+            __fileStatus _openFile(       std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
             
-            void  _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
+            void         _checkOpenFile(  std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
 
-            __fileStatus _closeFile(std::fstream*& file);
+            __fileStatus _closeFile(      std::fstream*& file);
 
-            void  _checkCloseFile(std::fstream*& file);
+            void         _checkCloseFile( std::fstream*& file);
 
-            __fileStatus _reopen(std::fstream*& file, const std::_Ios_Openmode& mode);
+            __fileStatus _reopen(         std::fstream*& file, const std::_Ios_Openmode& mode);
 
-            void  _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode);
+            void         _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode);
 
         public:
             FileBase(std::string path, const std::_Ios_Openmode& mode);
@@ -48,9 +49,11 @@ namespace PlukiPlukiLib
 
             void reopen(const std::_Ios_Openmode& mode);
 
-            std::string getPath() const;
+            std::string getPath()   const;
 
             std::fstream* getFile() const;
+
+            std::_Ios_Openmode getMode() const;
 
             static bool isExistsFile(std::string path);
     };

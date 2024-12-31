@@ -8,11 +8,12 @@ using namespace PlukiPlukiLib;
 
 FileBase::
     FileBase(std::string path, const std::_Ios_Openmode& mode):
-        _path{ "" }, _file{ nullptr }
+        _path{ "" }, _mode{ nullptr }, _file{ nullptr }
     {
         _checkOpenFile(_file, path, mode);
 
         _path = path;
+        _mode = new std::_Ios_Openmode{ mode };
     }
 
 FileBase::
@@ -34,6 +35,9 @@ FileBase::
             _file = nullptr;
         }
 
+        delete _mode;
+        _mode = nullptr;
+
         _path = "";
     }
 
@@ -47,6 +51,7 @@ std::string FileBase::
             case 2: return "File already is opened!";
             case 3: return "File is equals nullptr!";
             case 4: return "File already is closed!";
+            case 5: return "Mode is undefined, maybe because file closed!";
 
             default: return "Unknow file error!";
         }
@@ -163,6 +168,8 @@ void FileBase::
     reopen(const std::_Ios_Openmode& mode)
     {
         _checkReopenFile(_file, mode);
+
+        *_mode = mode;
     }
 
 std::string FileBase::
@@ -175,6 +182,17 @@ std::fstream* FileBase::
     getFile() const
     {
         return _file;
+    }
+
+std::_Ios_Openmode FileBase::
+    getMode() const
+    {
+        if (_mode == nullptr)
+        {
+            throw _getErrorMsgByStatus(5);
+        }
+
+        return *_mode;
     }
 
 bool FileBase::
