@@ -42,34 +42,34 @@ FileBase::
     }
 
 std::string FileBase::
-    _getErrorMsgByStatus(__fileStatus status) const
+    _getErrorMsgByStatus(FileBase::FILE_ERRORS error) const
     {
-        switch (status)
+        switch (error)
         {
-            case 0: /* Success */
-            case 1: return "File not exists!";
-            case 2: return "File already is opened!";
-            case 3: return "File is equals nullptr!";
-            case 4: return "File already is closed!";
-            case 5: return "Mode is undefined, maybe because file closed!";
+            // case SUCCESS - должно проверяться перед вызовом функции!
+            case FILE_NOT_EXISTS:     return "File not exists!";
+            case FILE_ALREADY_OPENED: return "File already is opened!";
+            case FILE_EQUALS_NULLPTR: return "File is equals nullptr!";
+            case FILE_ALREADY_CLOSED: return "File already is closed!";
+            case MODE_UNDEFINED:      return "Mode is undefined, maybe because file closed!";
 
-            default: return "Unknow file error!";
+            default:                  return "Unknow file error!";
         }
     }
 
-__fileStatus FileBase::
+FileBase::FILE_ERRORS FileBase::
     _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
     {
         if (!isExistsFile(path))
         {
-            return 1;
+            return FILE_NOT_EXISTS;
         }
 
         if (file != nullptr)
         {
             if (file->is_open())
             {
-                return 2;
+                return FILE_ALREADY_OPENED;
             }
 
             delete file;
@@ -78,21 +78,21 @@ __fileStatus FileBase::
         file = new std::fstream;
         file->open(path, mode);
 
-        return 0;
+        return SUCCESS;
     }
 
 void FileBase::
     _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
     {
-        __fileStatus openStatus = _openFile(file, path, mode);
+        FileBase::FILE_ERRORS openError = _openFile(file, path, mode);
 
-        if (openStatus != 0)
+        if (openError != SUCCESS)
         {
-            throw std::runtime_error(_getErrorMsgByStatus(openStatus));
+            throw std::runtime_error(_getErrorMsgByStatus(openError));
         }
     }
 
-__fileStatus FileBase::
+FileBase::FILE_ERRORS FileBase::
     _closeFile(std::fstream*& file)
     {
         /*
@@ -111,12 +111,12 @@ __fileStatus FileBase::
         */
         if (file == nullptr)   
         {
-            return 3;    
+            return FILE_EQUALS_NULLPTR;    
         }
 
         if (!file->is_open())
         {
-            return 4;
+            return FILE_ALREADY_CLOSED;
         }
 
         file->close();
@@ -124,43 +124,43 @@ __fileStatus FileBase::
         delete file;
         file = nullptr;
 
-        return 0;
+        return SUCCESS;
     }
 
 void FileBase::
     _checkCloseFile(std::fstream*& file)
     {
-        __fileStatus closeStatus = _closeFile(file);
+        FileBase::FILE_ERRORS closeError = _closeFile(file);
 
-        if (closeStatus != 0)
+        if (closeError != SUCCESS)
         {
-            throw std::runtime_error(_getErrorMsgByStatus(closeStatus));
+            throw std::runtime_error(_getErrorMsgByStatus(closeError));
         }
     }
 
-__fileStatus FileBase::
+FileBase::FILE_ERRORS FileBase::
     _reopen(std::fstream*& file, const std::_Ios_Openmode& mode)
     {
-        __fileStatus closeStatus = _closeFile(file);
+        FileBase::FILE_ERRORS closeError = _closeFile(file);
 
-        if (closeStatus != 0)
+        if (closeError != SUCCESS)
         {
-            return closeStatus;
+            return closeError;
         }
 
-        __fileStatus openStatus = _openFile(file, _path, mode);
+        FileBase::FILE_ERRORS openError = _openFile(file, _path, mode);
 
-        return openStatus;
+        return openError;
     }
 
 void  FileBase::
     _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode)
     {
-        __fileStatus reopenStatus = _reopen(file, mode);
+        FileBase::FILE_ERRORS reopenError = _reopen(file, mode);
 
-        if (reopenStatus != 0)
+        if (reopenError != SUCCESS)
         {
-            throw std::runtime_error(_getErrorMsgByStatus(reopenStatus));
+            throw std::runtime_error(_getErrorMsgByStatus(reopenError));
         }
     }
 
@@ -189,7 +189,7 @@ std::_Ios_Openmode FileBase::
     {
         if (_mode == nullptr)
         {
-            throw _getErrorMsgByStatus(5);
+            throw _getErrorMsgByStatus(MODE_UNDEFINED);
         }
 
         return *_mode;
