@@ -13,7 +13,7 @@ clang++ -c ../../src/core/FileBase.cpp -o ../../bin/FileBase.o
 ```
 
 ```bash
-ar rcs ../../bin/PlukiPluki.a ../../bin/PlukiPluki.o ../../bin/FileBase.o 
+ar rcs ../../bin/PlukiPluki.a ../../bin/*.o 
 ```
 
 ```bash
