@@ -4,7 +4,10 @@
 
 #include <fstream>
 #include <exception>
+#include <vector>
 #include <string>
+#include <iterator>
+#include <algorithm>
 
 //! #define DEBUG_MODE
 
@@ -26,6 +29,7 @@ namespace PlukiPlukiLib
             enum FILE_ERRORS
             {
                 WRONG_MODE           = 6,
+                INDEX_OUT_OF_RANGE   = 7,
             };
 
             std::string  _getErrorMsgByStatus(FILE_ERRORS error)                     const;
@@ -39,12 +43,16 @@ namespace PlukiPlukiLib
 
             std::string  _getRowByIndex     (std::fstream* file, __amountRows index) const;
 
+            void         _setRowByIndex     (std::fstream*& file, __amountRows index, std::string newStr);
+
         public:
             PlukiPluki(std::string path, const std::_Ios_Openmode& mode);
 
             __amountRows getAmountRows()                                             const;
 
             std::string  getRowByIndex(__amountRows index)                           const;
+
+            void         setRowByIndex(__amountRows index, std::string newStr);
 
             std::string  operator[]   (__amountRows index)                           const;
     };

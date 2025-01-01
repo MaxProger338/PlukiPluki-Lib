@@ -13,11 +13,11 @@ std::string PlukiPluki::
         {
             // case SUCCESS - должно проверяться перед вызовом функции!
             case WRONG_MODE:          return "Inccorect file mode!";
+            case INDEX_OUT_OF_RANGE:  return "Index out of range!";
 
             default:                  return "Unknow file error!";
         }
     }
-
 
 bool PlukiPluki::
     _compareModeByRead(const std::_Ios_Openmode& currentMode) const
@@ -37,7 +37,6 @@ bool PlukiPluki::
 
         return !_compareModeByRead(currentMode);
     }
-
 
 __amountRows PlukiPluki::
     _countRowsInFile(std::fstream* file) const
@@ -100,6 +99,26 @@ std::string PlukiPluki::
         return res;
     }
 
+void PlukiPluki::
+    _setRowByIndex(std::fstream*& file, __amountRows index, std::string newStr)
+    {
+        _reopen(file, std::ios::in);
+
+        std::vector<std::string> buf;
+
+        std::string tmp;
+        while (*file >> tmp)
+        {
+            buf.push_back(tmp);
+        }
+
+        buf[index] = newStr;
+
+        _reopen(file, std::ios::out);
+
+        std::copy(buf.begin(), buf.end(), std::ostream_iterator<std::string>(*file, "\n"));
+    }
+
 std::string PlukiPluki::
     getRowByIndex(__amountRows index) const
     {
@@ -115,12 +134,33 @@ std::string PlukiPluki::
         __amountRows amountRows = getAmountRows();
         if (index >= amountRows)
         {
-            throw std::runtime_error("Index out of range!");
+            throw std::runtime_error(_getErrorMsgByStatus(INDEX_OUT_OF_RANGE));
         }
 
         std::string row = _getRowByIndex(_file, index);
 
         return row;
+    }
+
+void PlukiPluki::
+    setRowByIndex(__amountRows index, std::string newStr)
+    {
+        if (!_compareModeByWrite(getMode()))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
+        }
+
+        reopen(std::ios::in);
+
+        __amountRows amountRows = getAmountRows();
+        if (index >= amountRows)
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(INDEX_OUT_OF_RANGE));
+        }
+
+        reopen(std::ios::app);
+
+        _setRowByIndex(_file, index, newStr);
     }
 
 std::string PlukiPluki::
