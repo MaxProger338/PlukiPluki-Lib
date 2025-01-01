@@ -168,3 +168,15 @@ std::string PlukiPluki::
     {
         return getRowByIndex(index);
     }
+
+void PlukiPluki::
+    operator()(__amountRows index, std::string newStr)
+    {
+        setRowByIndex(index, newStr);
+    }
+
+__amountRows PlukiPluki::
+    operator()() const
+    {
+        return getAmountRows();
+    }

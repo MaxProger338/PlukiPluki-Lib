@@ -55,5 +55,10 @@ namespace PlukiPlukiLib
             void         setRowByIndex(__amountRows index, std::string newStr);
 
             std::string  operator[]   (__amountRows index)                           const;
+
+            // Call setRowByIndex
+            void         operator()   (__amountRows index, std::string newStr);
+
+            __amountRows operator()()                                                const;
     };
 };
