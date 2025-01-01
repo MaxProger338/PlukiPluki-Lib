@@ -52,7 +52,6 @@ std::string FileBase::
             case FILE_EQUALS_NULLPTR: return "File is equals nullptr!";
             case FILE_ALREADY_CLOSED: return "File already is closed!";
             case MODE_UNDEFINED:      return "Mode is undefined, maybe because file closed!";
-            case WRONG_MODE:          return "Inccorect file mode!";
 
             default:                  return "Unknow file error!";
         }

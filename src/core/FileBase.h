@@ -10,8 +10,8 @@ namespace PlukiPlukiLib
 {
     class FileBase
     {
-        protected:
-            enum FILE_ERRORS
+        private:
+            enum FILE_ERRORS 
             {
                 SUCCESS              = 0,
                 FILE_NOT_EXISTS      = 1,
@@ -19,14 +19,14 @@ namespace PlukiPlukiLib
                 FILE_EQUALS_NULLPTR  = 3,
                 FILE_ALREADY_CLOSED  = 4,
                 MODE_UNDEFINED       = 5,
-                WRONG_MODE           = 6,
             };
 
+            std::string _getErrorMsgByStatus(FILE_ERRORS error) const;
+
+        protected:
             std::string         _path;
             std::_Ios_Openmode* _mode;
             std::fstream*       _file;
-
-            std::string _getErrorMsgByStatus(FILE_ERRORS status) const;
 
             FILE_ERRORS _openFile(       std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
             

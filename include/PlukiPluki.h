@@ -23,6 +23,14 @@ namespace PlukiPlukiLib
     class PlukiPluki : public FileBase
     {
         private:
+            enum FILE_ERRORS
+            {
+                WRONG_MODE           = 6,
+            };
+
+            std::string  _getErrorMsgByStatus(FILE_ERRORS error)                     const;
+
+        protected:
             bool         _compareModeByRead (const std::_Ios_Openmode& currentMode)  const;
 
             bool         _compareModeByWrite(const std::_Ios_Openmode& currentMode)  const;
@@ -38,6 +46,6 @@ namespace PlukiPlukiLib
 
             std::string  getRowByIndex(__amountRows index)                           const;
 
-            std::string  operator[](__amountRows index)                              const;
+            std::string  operator[]   (__amountRows index)                           const;
     };
 };

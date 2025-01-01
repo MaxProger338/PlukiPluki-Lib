@@ -6,6 +6,19 @@ PlukiPluki::
     PlukiPluki(std::string path, const std::_Ios_Openmode& mode):
         FileBase(path, mode) {}
 
+std::string PlukiPluki::
+    _getErrorMsgByStatus(PlukiPluki::FILE_ERRORS error) const
+    {
+        switch (error)
+        {
+            // case SUCCESS - должно проверяться перед вызовом функции!
+            case WRONG_MODE:          return "Inccorect file mode!";
+
+            default:                  return "Unknow file error!";
+        }
+    }
+
+
 bool PlukiPluki::
     _compareModeByRead(const std::_Ios_Openmode& currentMode) const
     {
