@@ -23,6 +23,10 @@ namespace PlukiPlukiLib
     class PlukiPluki : public FileBase
     {
         private:
+            bool            _compareModeByRead(const std::_Ios_Openmode& currentMode)  const;
+
+            bool            _compareModeByWrite(const std::_Ios_Openmode& currentMode) const;
+
             __amountRows    _countRowsInFile  (std::fstream* file)                     const;
 
             std::string     _getRowByIndex    (std::fstream* file, __amountRows index) const;

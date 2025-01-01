@@ -18,7 +18,8 @@ namespace PlukiPlukiLib
                 FILE_ALREADY_OPENED  = 2,
                 FILE_EQUALS_NULLPTR  = 3,
                 FILE_ALREADY_CLOSED  = 4,
-                MODE_UNDEFINED       = 5
+                MODE_UNDEFINED       = 5,
+                WRONG_MODE           = 6,
             };
 
             std::string         _path;

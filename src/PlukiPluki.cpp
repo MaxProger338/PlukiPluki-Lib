@@ -6,6 +6,26 @@ PlukiPluki::
     PlukiPluki(std::string path, const std::_Ios_Openmode& mode):
         FileBase(path, mode) {}
 
+bool PlukiPluki::
+    _compareModeByRead(const std::_Ios_Openmode& currentMode) const
+    {
+        switch (currentMode)
+        {
+            case std::ios::in: return true;
+
+            default:           return false;
+        }
+    }
+
+bool PlukiPluki::
+    _compareModeByWrite(const std::_Ios_Openmode& currentMode) const
+    {
+        /* switch (currentMode) ... */
+
+        return !_compareModeByRead(currentMode);
+    }
+
+
 __amountRows PlukiPluki::
     _countRowsInFile(std::fstream* file) const
     { 
@@ -33,6 +53,10 @@ __amountRows PlukiPluki::
         /*
          * Какая-то защита ...
          */
+        if (!_compareModeByRead(getMode()))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
+        }
 
         __amountRows amount = _countRowsInFile(_file);
 
@@ -70,6 +94,10 @@ std::string PlukiPluki::
          * Warning: Здесь всё защита в плане существования файла 
          *          проверяется в методе getAmountRows
          */
+        if (!_compareModeByRead(getMode()))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
+        }
 
         __amountRows amountRows = getAmountRows();
         if (index >= amountRows)
