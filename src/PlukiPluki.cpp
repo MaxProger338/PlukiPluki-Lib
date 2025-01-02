@@ -59,22 +59,6 @@ __amountRows PlukiPluki::
         return count;
     }
 
-__amountRows PlukiPluki::
-    getAmountRows() const
-    {
-        /*
-         * Какая-то защита ...
-         */
-        if (!_compareModeByRead(getMode()))
-        {
-            throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
-        }
-
-        __amountRows amount = _countRowsInFile(_file);
-
-        return amount;
-    }
-
 std::string PlukiPluki::
     _getRowByIndex(std::fstream* file, __amountRows index) const
     {
@@ -119,6 +103,39 @@ void PlukiPluki::
         std::copy(buf.begin(), buf.end(), std::ostream_iterator<std::string>(*file, "\n"));
     }
 
+std::vector<std::string>* PlukiPluki::
+    _indexAllFile(std::fstream* file) const
+    {
+        __amountRows amountRows = _countRowsInFile(file);
+
+        std::vector<std::string>* vec = new std::vector<std::string>(amountRows);
+
+        for (size_t i = 0; i < amountRows; i++)
+        {
+            std::string currentRow = _getRowByIndex(file, i);
+            
+            (*vec)[i] = currentRow;
+        }
+
+        return vec;
+    }
+
+__amountRows PlukiPluki::
+    getAmountRows() const
+    {
+        /*
+         * Какая-то защита ...
+         */
+        if (!_compareModeByRead(getMode()))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
+        }
+
+        __amountRows amount = _countRowsInFile(_file);
+
+        return amount;
+    }
+
 std::string PlukiPluki::
     getRowByIndex(__amountRows index) const
     {
@@ -161,6 +178,23 @@ void PlukiPluki::
         reopen(std::ios::app);
 
         _setRowByIndex(_file, index, newStr);
+    }
+
+ std::vector<std::string> PlukiPluki::
+    indexAllFile() const
+    {
+        if (!_compareModeByRead(getMode()))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
+        }
+
+        std::vector<std::string>* vecPtr = _indexAllFile(_file);
+
+        std::vector<std::string> resVec{ *vecPtr };
+
+        delete vecPtr;
+
+        return resVec;
     }
 
 std::string PlukiPluki::
