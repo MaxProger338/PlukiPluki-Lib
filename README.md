@@ -175,7 +175,7 @@ __PlukiPluki C++__ - это оболочкак над библиотекой *__
 И вводим команды
 
 ```bash
-clang++ -c src/Libs/PlukiPluki/src/PlukiPluki.cpp -o src/Libs/PlukiPluki/bin/PlukiPluki.o -I src/Libs/PlukiPluki/include
+clang++ -c src/Libs/PlukiPluki-Lib/src/PlukiPluki.cpp -o src/Libs/PlukiPluki-Lib/bin/PlukiPluki.o -I src/Libs/PlukiPluki-Lib/include
 ```
 
 ```bash
