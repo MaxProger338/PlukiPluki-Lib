@@ -32,22 +32,26 @@ namespace PlukiPlukiLib
                 INDEX_OUT_OF_RANGE   = 7,
             };
 
-            std::string  _getErrorMsgByStatus(FILE_ERRORS error)                                  const;
+            std::string  _getErrorMsgByStatus(FILE_ERRORS error)                                   const;
 
         protected:
-            bool         _compareModeByRead (const std::_Ios_Openmode& currentMode)               const;
+            bool         _compareModeByRead             (const std::_Ios_Openmode& currentMode)    const;
 
-            bool         _compareModeByWrite(const std::_Ios_Openmode& currentMode)               const;
+            bool         _compareModeByWrite            (const std::_Ios_Openmode& currentMode)    const;
 
-            __amountRows _countRowsInFile   (            std::fstream* file)                      const;
+            __amountRows _countRowsInFile               (std::fstream*  file)                      const;
 
-            std::string  _getRowByIndex     (            std::fstream* file,  __amountRows index) const;
+            std::string  _getRowByIndex                 (std::fstream*  file,  __amountRows index) const;
 
-            void         _setRowByIndex     (            std::fstream*& file, __amountRows index, std::string newStr);
+            void         _setRowByIndex                 (std::fstream*& file, __amountRows index, std::string newStr);
 
-            std::vector<std::string>* _indexAllFile(     std::fstream* file)                      const;
+            std::vector<std::string>* _checkIndexAllFile(std::fstream*  file)                      const;
 
-            std::vector<std::string>* _checkIndexAllFile(std::fstream* file)                      const;
+            std::vector<std::string>* _indexAllFile     (std::fstream*  file)                      const;
+
+            void        _checkClearFile                 (std::fstream*& file, const std::_Ios_Openmode& mode);
+
+            void        _clearFile                      (std::fstream*& file);
 
         public:
             PlukiPluki(std::string path, const std::_Ios_Openmode& mode);
@@ -59,6 +63,8 @@ namespace PlukiPlukiLib
             void         setRowByIndex(__amountRows index, std::string newStr);
 
             std::vector<std::string> indexAllFile()                             const;
+
+            void clearFile();
 
             std::string  operator[]   (__amountRows index)                      const;
 

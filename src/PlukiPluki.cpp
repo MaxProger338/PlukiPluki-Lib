@@ -120,6 +120,27 @@ std::vector<std::string>* PlukiPluki::
         return vec;
     }
 
+void PlukiPluki::
+    _checkClearFile(std::fstream*& file, const std::_Ios_Openmode& mode)
+    {
+        if (!_compareModeByWrite(getMode()))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
+        }
+
+        _clearFile(file);
+
+        // Это востановит прежний режим (ААА!!! ПАСХААЛКА ПАСХААЛКА!!)
+        _reopen(file, mode);
+    }
+
+void PlukiPluki::
+    _clearFile(std::fstream*& file)
+    {
+        // Этот переоткрытие нам почистит файл
+        _reopen(file, std::ios::out);
+    }
+
 __amountRows PlukiPluki::
     getAmountRows() const
     {
@@ -195,6 +216,12 @@ void PlukiPluki::
         delete vecPtr;
 
         return resVec;
+    }
+
+void PlukiPluki::
+    clearFile()
+    {
+        _checkClearFile(_file, getMode());
     }
 
 std::string PlukiPluki::
