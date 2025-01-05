@@ -57,6 +57,17 @@ std::string FileBase::
         }
     }
 
+void FileBase::
+    _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
+    {
+        FileBase::FILE_ERRORS openError = _openFile(file, path, mode);
+
+        if (openError != SUCCESS)
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(openError));
+        }
+    }
+
 FileBase::FILE_ERRORS FileBase::
     _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
     {
@@ -82,13 +93,13 @@ FileBase::FILE_ERRORS FileBase::
     }
 
 void FileBase::
-    _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
+    _checkCloseFile(std::fstream*& file)
     {
-        FileBase::FILE_ERRORS openError = _openFile(file, path, mode);
+        FileBase::FILE_ERRORS closeError = _closeFile(file);
 
-        if (openError != SUCCESS)
+        if (closeError != SUCCESS)
         {
-            throw std::runtime_error(_getErrorMsgByStatus(openError));
+            throw std::runtime_error(_getErrorMsgByStatus(closeError));
         }
     }
 
@@ -127,14 +138,14 @@ FileBase::FILE_ERRORS FileBase::
         return SUCCESS;
     }
 
-void FileBase::
-    _checkCloseFile(std::fstream*& file)
+void  FileBase::
+    _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode)
     {
-        FileBase::FILE_ERRORS closeError = _closeFile(file);
+        FileBase::FILE_ERRORS reopenError = _reopen(file, mode);
 
-        if (closeError != SUCCESS)
+        if (reopenError != SUCCESS)
         {
-            throw std::runtime_error(_getErrorMsgByStatus(closeError));
+            throw std::runtime_error(_getErrorMsgByStatus(reopenError));
         }
     }
 
@@ -151,17 +162,6 @@ FileBase::FILE_ERRORS FileBase::
         FileBase::FILE_ERRORS openError = _openFile(file, _path, mode);
 
         return openError;
-    }
-
-void  FileBase::
-    _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode)
-    {
-        FileBase::FILE_ERRORS reopenError = _reopen(file, mode);
-
-        if (reopenError != SUCCESS)
-        {
-            throw std::runtime_error(_getErrorMsgByStatus(reopenError));
-        }
     }
 
 void FileBase::

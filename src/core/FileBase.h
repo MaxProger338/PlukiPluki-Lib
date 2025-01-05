@@ -28,17 +28,17 @@ namespace PlukiPlukiLib
             std::_Ios_Openmode* _mode;
             std::fstream*       _file;
 
-            FILE_ERRORS _openFile(       std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
-            
             void        _checkOpenFile(  std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
-
-            FILE_ERRORS _closeFile(      std::fstream*& file);
+            
+            FILE_ERRORS _openFile(       std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
 
             void        _checkCloseFile( std::fstream*& file);
 
-            FILE_ERRORS _reopen(         std::fstream*& file, const std::_Ios_Openmode& mode);
+            FILE_ERRORS _closeFile(      std::fstream*& file);
 
             void        _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode);
+
+            FILE_ERRORS _reopen(         std::fstream*& file, const std::_Ios_Openmode& mode);
 
         public:
             FileBase(std::string path, const std::_Ios_Openmode& mode);
