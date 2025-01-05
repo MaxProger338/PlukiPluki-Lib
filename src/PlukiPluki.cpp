@@ -141,6 +141,27 @@ void PlukiPluki::
         _reopen(file, std::ios::out);
     }
 
+void PlukiPluki::
+    _insertToFile(std::fstream*& file, __amountRows index, std::string newStr)
+    {
+        std::vector<std::string>* indexFile = const_cast<PlukiPluki*>(this)->_indexAllFile(file);
+
+        (*indexFile)[index] = newStr;
+
+        _clearFile(file);
+        
+        const std::_Ios_Openmode& currentMode = getMode();
+
+        for (auto i : *indexFile)
+        {
+            *_file << i << '\n';
+        }
+
+        _reopen(file, currentMode);
+
+        delete indexFile;
+    }
+
 __amountRows PlukiPluki::
     getAmountRows() const
     {
@@ -222,6 +243,30 @@ void PlukiPluki::
     clearFile()
     {
         _checkClearFile(_file, getMode());
+    }
+
+void PlukiPluki::
+    insertToFile(__amountRows index, std::string newData)
+    {
+        if (!_compareModeByWrite(getMode()))
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
+        }
+
+        const std::_Ios_Openmode& currentMode = getMode();
+
+        reopen(std::ios::in);
+
+        __amountRows amountRows = getAmountRows();
+
+        if (index >= amountRows)
+        {
+            throw std::runtime_error("Incorrect index!");
+        }
+
+        _insertToFile(_file, index, newData);
+
+        reopen(currentMode);
     }
 
 std::string PlukiPluki::
