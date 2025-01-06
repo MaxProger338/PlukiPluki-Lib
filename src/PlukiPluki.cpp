@@ -146,7 +146,7 @@ void PlukiPluki::
     {
         std::vector<std::string>* indexFile = const_cast<PlukiPluki*>(this)->_indexAllFile(file);
 
-        (*indexFile)[index] = newStr;
+        indexFile->insert(indexFile->begin() + index, newStr);
 
         _clearFile(file);
         
