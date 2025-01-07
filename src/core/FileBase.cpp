@@ -7,13 +7,13 @@ using namespace PlukiPlukiLib;
 */
 
 FileBase::
-    FileBase(std::string path, const std::_Ios_Openmode& mode):
-        _path{ "" }, _mode{ nullptr }, _file{ nullptr }
+    FileBase(const std::string& path, const __IOS_MODE& mode)
     {
-        _checkOpenFile(_file, path, mode);
+        // Если что пробрасывает исключение
+        _open(_file, path, mode);
 
         _path = path;
-        _mode = new std::_Ios_Openmode{ mode };
+        _mode = new __IOS_MODE{ mode };
     }
 
 FileBase::
@@ -25,14 +25,13 @@ FileBase::
          */
         // _checkCloseFile(_file); 
 
-        if (_closeFile(_file) != 0)
+        if (_checkIfHasClosed(_file) != SUCCESS)
         {
             /* 
              * Что-то пошло не так 
              * Надо что-то обработать
              */
-            delete _file;
-            _file = nullptr;
+            _closeImpl(_file);
         }
 
         delete _mode;
@@ -41,8 +40,19 @@ FileBase::
         _path = "";
     }
 
+__IOS_MODE FileBase::
+    _getMode() const
+    {
+        if (_mode == nullptr)
+        {
+            throw _getErrorMsgByStatus(MODE_UNDEFINED);
+        }
+
+        return *_mode;
+    }
+
 std::string FileBase::
-    _getErrorMsgByStatus(FileBase::FILE_ERRORS error) const
+    _getErrorMsgByStatus(FileBase::ERROR_STATUS error) const noexcept
     {
         switch (error)
         {
@@ -57,19 +67,24 @@ std::string FileBase::
         }
     }
 
+// Open
 void FileBase::
-    _checkOpenFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
+    _open(std::fstream*& file, const std::string& path, const __IOS_MODE& mode)
     {
-        FileBase::FILE_ERRORS openError = _openFile(file, path, mode);
+        FileBase::ERROR_STATUS openErrorStatus = _checkIfHasOpened(file, path, mode);
 
-        if (openError != SUCCESS)
+        if (openErrorStatus != SUCCESS)
         {
-            throw std::runtime_error(_getErrorMsgByStatus(openError));
+            throw std::runtime_error(_getErrorMsgByStatus(openErrorStatus));
         }
     }
 
-FileBase::FILE_ERRORS FileBase::
-    _openFile(std::fstream*& file, std::string path, const std::_Ios_Openmode& mode)
+FileBase::ERROR_STATUS FileBase::
+    _checkIfHasOpened(
+        std::fstream*&     file, 
+        const std::string& path, 
+        const __IOS_MODE&  mode
+    ) noexcept
     {
         if (!isExistsFile(path))
         {
@@ -83,28 +98,41 @@ FileBase::FILE_ERRORS FileBase::
                 return FILE_ALREADY_OPENED;
             }
 
-            delete file;
+            return FILE_NOT_EQUALS_NULLPTR;
         }
 
-        file = new std::fstream;
-        file->open(path, mode);
+        _openImpl(file, path, mode);
 
         return SUCCESS;
     }
 
 void FileBase::
-    _checkCloseFile(std::fstream*& file)
+    _openImpl(
+        std::fstream*&     file, 
+        const std::string& path, 
+        const __IOS_MODE&  mode
+    ) noexcept
     {
-        FileBase::FILE_ERRORS closeError = _closeFile(file);
+        file = new std::fstream;
+        file->open(path, mode);
+    }
 
-        if (closeError != SUCCESS)
+// End open
+
+// Close
+void FileBase::
+    _close(std::fstream*& file)
+    {
+        FileBase::ERROR_STATUS closeErrorStatus = _checkIfHasClosed(file);
+
+        if (closeErrorStatus != SUCCESS)
         {
-            throw std::runtime_error(_getErrorMsgByStatus(closeError));
+            throw std::runtime_error(_getErrorMsgByStatus(closeErrorStatus));
         }
     }
 
-FileBase::FILE_ERRORS FileBase::
-    _closeFile(std::fstream*& file)
+FileBase::ERROR_STATUS FileBase::
+    _checkIfHasClosed(std::fstream*& file) noexcept
     {
         /*
          * WARNING!: ИЗ-ЗА ЭТОГО УСЛОВИЯ ПРИ ДЕФОЛТНОМ КОПИРОВАНИЕ ОБЪЕКТА
@@ -130,73 +158,106 @@ FileBase::FILE_ERRORS FileBase::
             return FILE_ALREADY_CLOSED;
         }
 
-        file->close();
-
-        delete file;
-        file = nullptr;
+        _closeImpl(file);
 
         return SUCCESS;
     }
 
-void  FileBase::
-    _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode)
+void FileBase::
+    _closeImpl(std::fstream*& file) noexcept
     {
-        FileBase::FILE_ERRORS reopenError = _reopen(file, mode);
+        file->close();
 
-        if (reopenError != SUCCESS)
+        delete file;
+        file = nullptr;
+    }
+
+// End close
+
+// Reopen
+void FileBase::
+    _reopen(
+        std::fstream*&     file, 
+        const std::string& path, 
+        const __IOS_MODE&  mode
+    ) {
+        FileBase::ERROR_STATUS reopenErrorStatus = _checkIfHasReopened(file, path, mode);
+
+        if (reopenErrorStatus != SUCCESS)
         {
-            throw std::runtime_error(_getErrorMsgByStatus(reopenError));
+            throw std::runtime_error(_getErrorMsgByStatus(reopenErrorStatus));
         }
     }
 
-FileBase::FILE_ERRORS FileBase::
-    _reopen(std::fstream*& file, const std::_Ios_Openmode& mode)
+FileBase::ERROR_STATUS FileBase::
+    _checkIfHasReopened(
+        std::fstream*&     file, 
+        const std::string& path, 
+        const __IOS_MODE&  mode
+    ) noexcept
     {
-        FileBase::FILE_ERRORS closeError = _closeFile(file);
-
-        if (closeError != SUCCESS)
+        if (!isExistsFile(path))
         {
-            return closeError;
+            return FILE_NOT_EXISTS;
         }
 
-        FileBase::FILE_ERRORS openError = _openFile(file, _path, mode);
+        if (file == nullptr)   
+        {
+            return FILE_EQUALS_NULLPTR;    
+        }
 
-        return openError;
+        if (!file->is_open())
+        {
+            return FILE_ALREADY_CLOSED;
+        }
+
+        _reopenImpl(file, path, mode);
+
+        return SUCCESS;
     }
 
 void FileBase::
-    reopen(const std::_Ios_Openmode& mode)
+    _reopenImpl(
+        std::fstream*&     file, 
+        const std::string& path, 
+        const __IOS_MODE&  mode
+    ) noexcept
     {
-        _checkReopenFile(_file, mode);
+        _closeImpl(file);
+
+        _openImpl(file, path, mode);
+    }
+
+// End reopen
+
+void FileBase::
+    reopen(const __IOS_MODE& mode)
+    {
+        _reopen(_file, _path, mode);
 
         *_mode = mode;
     }
 
 std::string FileBase::
-    getPath() const
+    getPath() const noexcept
     {
         return _path;
     }
 
 std::fstream* FileBase::
-    getFile() const
+    getFile() const noexcept
     {
         return _file;
     }
 
-std::_Ios_Openmode FileBase::
+__IOS_MODE FileBase::
     getMode() const
     {
-        if (_mode == nullptr)
-        {
-            throw _getErrorMsgByStatus(MODE_UNDEFINED);
-        }
-
-        return *_mode;
+        return _getMode();
     }
 
 bool FileBase::
-    isExistsFile(std::string path)
+    isExistsFile(std::string path) noexcept
     {
         return std::filesystem::exists(path);
     }

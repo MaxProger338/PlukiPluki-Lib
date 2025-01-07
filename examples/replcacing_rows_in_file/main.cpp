@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 
         file.reopen(std::ios::app);
 
-        file.setRowByIndex(1, "lol!");
+        file.setRow(1, "lol!");
 
         file.reopen(std::ios::in);
 

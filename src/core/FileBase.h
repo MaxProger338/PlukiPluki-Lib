@@ -6,64 +6,109 @@
 #include <filesystem>
 #include <iostream>
 
+
 namespace PlukiPlukiLib
 {
+    typedef std::_Ios_Openmode __IOS_MODE;
+
     class FileBase
     {
+
         private:
-            enum FILE_ERRORS 
+            enum ERROR_STATUS
             {
-                SUCCESS              = 0,
-                FILE_NOT_EXISTS      = 1,
-                FILE_ALREADY_OPENED  = 2,
-                FILE_EQUALS_NULLPTR  = 3,
-                FILE_ALREADY_CLOSED  = 4,
-                MODE_UNDEFINED       = 5,
+                SUCCESS                  = 0,
+                FILE_NOT_EXISTS          = 1,
+                FILE_ALREADY_OPENED      = 2,
+                FILE_EQUALS_NULLPTR      = 3,
+                FILE_ALREADY_CLOSED      = 4,
+                FILE_NOT_EQUALS_NULLPTR  = 5,
+                MODE_UNDEFINED           = 6,
             };
 
-            std::string _getErrorMsgByStatus(FILE_ERRORS error) const;
+            std::string _getErrorMsgByStatus(ERROR_STATUS error) const noexcept;
 
         protected:
-            std::string         _path;
-            std::_Ios_Openmode* _mode;
-            std::fstream*       _file;
+            std::string   _path = "";
+            __IOS_MODE*   _mode = nullptr;
+            std::fstream* _file = nullptr;
 
-            void        _checkOpenFile  (std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
+            __IOS_MODE  _getMode()     const;
+
+            // Open 
+            void         _open               (
+                                                std::fstream*&     file, 
+                                                const std::string& path, 
+                                                const __IOS_MODE&  mode
+                                             );
+
+            ERROR_STATUS _checkIfHasOpened   (
+                                                std::fstream*&     file, 
+                                                const std::string& path, 
+                                                const __IOS_MODE&  mode
+                                             ) noexcept;
             
-            FILE_ERRORS _openFile       (std::fstream*& file, std::string path, const std::_Ios_Openmode& mode);
+            void         _openImpl           (
+                                                std::fstream*&     file, 
+                                                const std::string& path, 
+                                                const __IOS_MODE&  mode
+                                             ) noexcept;
 
-            void        _checkCloseFile (std::fstream*& file);
+            // Close
+            void         _close              (std::fstream*& file);
 
-            FILE_ERRORS _closeFile      (std::fstream*& file);
+            ERROR_STATUS _checkIfHasClosed   (std::fstream*& file) 
+                                                noexcept;
 
-            void        _checkReopenFile(std::fstream*& file, const std::_Ios_Openmode& mode);
+            void         _closeImpl          (std::fstream*& file) 
+                                                noexcept;
 
-            FILE_ERRORS _reopen         (std::fstream*& file, const std::_Ios_Openmode& mode);
+            // Reopen
+            void         _reopen             (
+                                                std::fstream*&     file, 
+                                                const std::string& path, 
+                                                const __IOS_MODE&  mode
+                                             );
+
+            ERROR_STATUS _checkIfHasReopened (
+                                                std::fstream*&     file, 
+                                                const std::string& path, 
+                                                const __IOS_MODE&  mode
+                                             ) noexcept;
+
+            void         _reopenImpl         (
+                                                std::fstream*& file, 
+                                                const std::string& path, 
+                                                const __IOS_MODE& mode
+                                             ) noexcept;
+
+            // Get mode
+            
 
         public:
-            FileBase(std::string path, const std::_Ios_Openmode& mode);
+            FileBase (const std::string& path, const __IOS_MODE& mode);
 
             /*
              * TODO: Поразмышлять на тему удаления конструкторов и операторов присвоения
              */
-            FileBase(const FileBase& fileBase)           = delete;
+            FileBase          (const FileBase& fileBase) = delete;
 
-            FileBase(FileBase&& fileBase)                = delete;
+            FileBase          (FileBase&&      fileBase) = delete;
 
             FileBase operator=(const FileBase& fileBase) = delete;
 
-            FileBase operator=(FileBase&& fileBase)      = delete;
+            FileBase operator=(FileBase&&      fileBase) = delete;
 
             ~FileBase();
 
-            void reopen(const std::_Ios_Openmode& mode);
+            void reopen(const __IOS_MODE& mode);
 
-            std::string getPath()   const;
+            std::string        getPath() const          noexcept;
 
-            std::fstream* getFile() const;
+            std::fstream*      getFile() const          noexcept;
 
-            std::_Ios_Openmode getMode() const;
+            __IOS_MODE         getMode() const;
 
-            static bool isExistsFile(std::string path);
+            static bool isExistsFile (std::string path) noexcept;
     };
 };

@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     {
         PlukiPluki fb("data/data.txt", std::ios::in);
 
-        std::vector<std::string> myVec{ fb.indexAllFile() };
+        std::vector<std::string> myVec{ fb.indexAll() };
 
         for (auto i : myVec)
         {

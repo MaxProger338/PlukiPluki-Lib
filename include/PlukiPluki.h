@@ -26,57 +26,194 @@ namespace PlukiPlukiLib
     class PlukiPluki : public FileBase
     {
         private:
-            enum FILE_ERRORS
+            enum ERROR_STATUS
             {
-                WRONG_MODE           = 6,
-                INDEX_OUT_OF_RANGE   = 7,
+                SUCCESS              = 0,
+                WRONG_MODE           = 1,
+                INDEX_OUT_OF_RANGE   = 2,
             };
 
-            std::string               _getErrorMsgByStatus(FILE_ERRORS error)                       const;
+            std::string              _getErrorMsgByStatus    (
+                                                                ERROR_STATUS error
+                                                             ) const noexcept;
 
         protected:
-            bool                      _compareModeByRead  (const std::_Ios_Openmode& currentMode)   const;
+            bool                     _compareModeByIsRead    (
+                                                                const __IOS_MODE& currentMode
+                                                             ) const noexcept;
 
-            bool                      _compareModeByWrite (const std::_Ios_Openmode& currentMode)   const;
+            bool                     _compareModeByIsWrite   (
+                                                                const __IOS_MODE& currentMode
+                                                             ) const noexcept;
 
-            __amountRows              _countRowsInFile    (std::fstream*  file)                     const;
+            void                     _reopenToPreviosMode    (
+                                                                std::fstream*&      file,
+                                                                const std::string& path,
+                                                                const __IOS_MODE&  currentMode
+                                                             ) noexcept;
 
-            std::string               _getRowByIndex      (std::fstream*  file, __amountRows index) const;
+            // Get amount rows
+            __amountRows             _getAmountRows          (
+                                                                std::fstream*     file,
+                                                                const __IOS_MODE& currentMode
+                                                             ) const;
 
-            void                      _setRowByIndex      (std::fstream*& file, __amountRows index, std::string newStr);
+            __amountRows             _getAmountRowsImpl      (
+                                                                std::fstream*     file
+                                                             ) const noexcept;
 
-            std::vector<std::string>* _checkIndexAllFile  (std::fstream*  file)                     const;
+            // Get row by index
+            std::string              _getRow                 (
+                                                                std::fstream*     file,
+                                                                const __IOS_MODE& currentMode, 
+                                                                __amountRows      index
+                                                             ) const;
 
-            std::vector<std::string>* _indexAllFile       (std::fstream*  file)                     const;
+            std::string              _getRowImpl             (
+                                                                std::fstream* file, 
+                                                                __amountRows  index
+                                                             ) const noexcept;
 
-            void                      _checkClearFile     (std::fstream*& file, const std::_Ios_Openmode& mode);
+            // Set row by index
+            void                     _setRow                 (
+                                                                std::fstream*&     file, 
+                                                                const std::string& path, 
+                                                                const __IOS_MODE&  currentMode,
+                                                                __amountRows       index, 
+                                                                std::string        newStr
+                                                             );
 
-            void                      _clearFile          (std::fstream*& file);
+            ERROR_STATUS             _checkIsRowSetted       (
+                                                                std::fstream*&     file, 
+                                                                const std::string& path, 
+                                                                const __IOS_MODE&  currentMode,
+                                                                __amountRows       index, 
+                                                                std::string        newStr
+                                                             ) noexcept;
 
+            void                     _setRowImpl             (
+                                                                std::fstream*&     file, 
+                                                                const std::string& path, 
+                                                                __amountRows       index, 
+                                                                std::string        newStr
+                                                             ) noexcept;
 
-            void                      _insertToFile       (std::fstream*& file, __amountRows index, std::string newStr);
+            // Index all file
+            std::vector<std::string> _indexAll               (
+                                                                std::fstream*     file, 
+                                                                const __IOS_MODE& currentMode
+                                                             ) const;
+
+            std::vector<std::string> _indexAllImpl           (std::fstream* file) 
+                                                                const noexcept;
+
+            // Clear
+            void                      _clear                 (
+                                                                std::fstream*&     file,
+                                                                const std::string& path, 
+                                                                const __IOS_MODE&  currentMode
+                                                             );
+
+            ERROR_STATUS              _checkIfHasCleared     (
+                                                                std::fstream*&     file,
+                                                                const std::string& path, 
+                                                                const __IOS_MODE&  currentMode
+                                                             ) noexcept;
+
+            void                      _clearImpl             (
+                                                                std::fstream*&     file, 
+                                                                const std::string& path
+                                                             ) noexcept;
+
+            // Insert row
+            void                      _insertRow             (
+                                                                std::fstream*&     file, 
+                                                                const std::string& path, 
+                                                                const __IOS_MODE&  currentMode,
+                                                                __amountRows       index, 
+                                                                std::string        newRow
+                                                             );
+
+            ERROR_STATUS              _checkIfHasRowInserted (
+                                                                std::fstream*&     file, 
+                                                                const std::string& path, 
+                                                                const __IOS_MODE&  currentMode,
+                                                                __amountRows       index, 
+                                                                std::string        newRow
+                                                             ) noexcept;
+
+            void                      _insertRowImpl         (
+                                                                std::fstream*&     file, 
+                                                                const std::string& path,
+                                                                __amountRows       index, 
+                                                                std::string        newRow
+                                                             ) noexcept;
+
+            // Delete row
+            void                      _deleteRow             (
+                                                                std::fstream*&     file,
+                                                                const std::string& path, 
+                                                                const __IOS_MODE&  currentMode,
+                                                                __amountRows       index   
+                                                             );
+
+            ERROR_STATUS              _checkIfHasRowDeleted  (
+                                                                std::fstream*&     file,
+                                                                const std::string& path, 
+                                                                const __IOS_MODE&  currentMode,
+                                                                __amountRows       index
+                                                             ) noexcept;
+
+            void                      _deleteRowImpl         (
+                                                                std::fstream*&     file,
+                                                                const std::string& path, 
+                                                                __amountRows       index
+                                                             ) noexcept;
 
         public:
-            PlukiPluki(std::string path, const std::_Ios_Openmode& mode);
+            PlukiPluki                        (std::string path, const __IOS_MODE& mode);
 
-            __amountRows getAmountRows()                                        const;
+            PlukiPluki                        (const PlukiPluki& plukiPluki) 
+                                                = delete;
+         
+            PlukiPluki                        (PlukiPluki&&      plukiPluki) 
+                                                = delete;
 
-            std::string  getRowByIndex(__amountRows index)                      const;
+            PlukiPluki operator=              (const PlukiPluki& plukiPluki) 
+                                                = delete;
 
-            void         setRowByIndex(__amountRows index, std::string newStr);
+            PlukiPluki operator=              (PlukiPluki&&      plukiPluki) 
+                                                = delete;
 
-            std::vector<std::string> indexAllFile()                             const;
+            __amountRows getAmountRows        ()             
+                                                const;
 
-            void clearFile();
+            std::string  getRow               (__amountRows index)                      
+                                                const;
 
-            void insertToFile         (__amountRows index, std::string newData);
+            void         setRow               (__amountRows index, std::string newRow);
 
-            std::string  operator[]   (__amountRows index)                      const;
+            std::vector<std::string> indexAll ()
+                                                const;
 
-            // Call setRowByIndex
-            void         operator()   (__amountRows index, std::string newStr);
+            void clearFile                    ();
+
+            void insertRow                    (__amountRows index, std::string newRow);
+
+            void deleteRow                    (__amountRows index);
+
+            // Call getRow
+            std::string  operator[]           (__amountRows index)
+                                                const;
+
+            // Call setRow
+            void         operator()           (__amountRows index, std::string newStr);
+
+            // Call deleteRow
+            void         operator()           (__amountRows index);
 
             // Call getAmountRows
-            __amountRows operator()()                                           const;
+            __amountRows operator()           ()
+                                                const;
     };
 };
