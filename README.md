@@ -110,7 +110,7 @@ __PlukiPluki C++__ - это оболочкак над библиотекой *__
              * и возвращает std::vector со стокоми файда.
              * Здесь мы просто копируем, его в другой, только что, созданный std::vector
             */
-            std::vector<std::string> myVec{ fb.indexAllFile() };
+            std::vector<std::string> myVec{ fb.indexAll() };
 
             // Перебираем весь вектор и выводим содержимое в терминал
             for (auto i : myVec)
