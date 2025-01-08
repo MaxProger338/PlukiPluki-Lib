@@ -19,8 +19,20 @@ std::string PlukiPluki::
         }
     }
 
+// Mode for read
 bool PlukiPluki::
-    _compareModeByIsRead(const std::_Ios_Openmode& currentMode) const noexcept
+    _isModeForRead(const std::_Ios_Openmode* currentMode) const
+    {
+        if (currentMode == nullptr)
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(MODE_EQUALS_NULLPTR));
+        }
+
+        return _isModeForReadImpl(*currentMode);
+    }
+
+bool PlukiPluki::
+    _isModeForReadImpl(const std::_Ios_Openmode& currentMode) const noexcept
     {
         switch (currentMode)
         {
@@ -30,13 +42,31 @@ bool PlukiPluki::
         }
     }
 
+// End Mode for read
+
+// Mode for write
 bool PlukiPluki::
-    _compareModeByIsWrite(const std::_Ios_Openmode& currentMode) const noexcept
+    _isModeForWrite(
+        const __IOS_MODE* currentMode
+    ) const
+    {
+         if (currentMode == nullptr)
+        {
+            throw std::runtime_error(_getErrorMsgByStatus(MODE_EQUALS_NULLPTR));
+        }
+
+        return _isModeForWriteImpl(*currentMode);
+    }
+
+bool PlukiPluki::
+    _isModeForWriteImpl(const std::_Ios_Openmode& currentMode) const noexcept
     {
         /* switch (currentMode) ... */
 
-        return !_compareModeByIsRead(currentMode);
+        return !_isModeForReadImpl(currentMode);
     }
+
+// Mode for write
 
 void PlukiPluki::
     _reopenToPreviosMode(
@@ -60,7 +90,7 @@ void PlukiPluki::
 __amountRows PlukiPluki::
     _getAmountRows(std::fstream* file, const __IOS_MODE& currentMode) const
     {
-        if (!_compareModeByIsRead(currentMode))
+        if (!_isModeForReadImpl(currentMode))
         {
             throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
         }
@@ -99,7 +129,7 @@ std::string PlukiPluki::
         __amountRows      index
     ) const
     {
-        if (!_compareModeByIsRead(currentMode))
+        if (!_isModeForReadImpl(currentMode))
         {
             throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
         }
@@ -167,7 +197,7 @@ PlukiPluki::ERROR_STATUS PlukiPluki::
         std::string        newRow
     ) noexcept
     {
-        if (!_compareModeByIsWrite(currentMode))
+        if (!_isModeForWriteImpl(currentMode))
         {
             return WRONG_MODE;
         }
@@ -224,7 +254,7 @@ void PlukiPluki::
 std::vector<std::string> PlukiPluki::
     _indexAll(std::fstream* file, const __IOS_MODE& currentMode) const
     {
-        if (!_compareModeByIsRead(currentMode))
+        if (!_isModeForReadImpl(currentMode))
         {
             throw std::runtime_error(_getErrorMsgByStatus(WRONG_MODE));
         }
@@ -271,7 +301,7 @@ PlukiPluki::ERROR_STATUS PlukiPluki::
         const std::_Ios_Openmode& currentMode
     ) noexcept
     {
-        if (!_compareModeByIsWrite(currentMode))
+        if (!_isModeForWriteImpl(currentMode))
         {
             return WRONG_MODE;
         }
@@ -327,7 +357,7 @@ PlukiPluki::ERROR_STATUS PlukiPluki::
             std::string        newRow
     ) noexcept
     {
-        if (!_compareModeByIsWrite(currentMode))
+        if (!_isModeForWriteImpl(currentMode))
         {
             return WRONG_MODE;
         }
@@ -393,7 +423,7 @@ PlukiPluki::ERROR_STATUS PlukiPluki::
         __amountRows       index
     ) noexcept
     {
-        if (!_compareModeByIsWrite(currentMode))
+        if (!_isModeForWriteImpl(currentMode))
         {
             return WRONG_MODE;
         }
@@ -433,6 +463,19 @@ void PlukiPluki::
     }
 
 // End delete row
+
+bool PlukiPluki::
+    isModeForRead() const
+    {
+        return _isModeForRead(_mode);
+    }
+
+bool PlukiPluki::
+    isModeForWrite() const
+    {
+        return _isModeForWrite(_mode);
+    }
+
 
 __amountRows PlukiPluki::
     getAmountRows() const

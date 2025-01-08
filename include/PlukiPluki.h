@@ -28,9 +28,10 @@ namespace PlukiPlukiLib
         private:
             enum ERROR_STATUS
             {
-                SUCCESS              = 0,
-                WRONG_MODE           = 1,
-                INDEX_OUT_OF_RANGE   = 2,
+               SUCCESS              = 0,
+               WRONG_MODE           = 1,
+               INDEX_OUT_OF_RANGE   = 2,
+               MODE_EQUALS_NULLPTR  = 3,
             };
 
             std::string              _getErrorMsgByStatus    (
@@ -38,16 +39,26 @@ namespace PlukiPlukiLib
                                                              ) const noexcept;
 
         protected:
-            bool                     _compareModeByIsRead    (
+            // Mode for read
+            bool                     _isModeForRead          (
+                                                                const __IOS_MODE* currentMode
+                                                             ) const;
+
+            bool                     _isModeForReadImpl      (
                                                                 const __IOS_MODE& currentMode
                                                              ) const noexcept;
 
-            bool                     _compareModeByIsWrite   (
+            // Mode for write
+            bool                     _isModeForWrite         (
+                                                                const __IOS_MODE* currentMode
+                                                             ) const;
+
+            bool                     _isModeForWriteImpl     (
                                                                 const __IOS_MODE& currentMode
                                                              ) const noexcept;
 
             void                     _reopenToPreviosMode    (
-                                                                std::fstream*&      file,
+                                                                std::fstream*&     file,
                                                                 const std::string& path,
                                                                 const __IOS_MODE&  currentMode
                                                              ) noexcept;
@@ -171,49 +182,55 @@ namespace PlukiPlukiLib
                                                              ) noexcept;
 
         public:
-            PlukiPluki                        (std::string path, const __IOS_MODE& mode);
+            PlukiPluki                                (std::string path, const __IOS_MODE& mode);
 
-            PlukiPluki                        (const PlukiPluki& plukiPluki) 
-                                                = delete;
+            PlukiPluki                                (const PlukiPluki& plukiPluki) 
+                                                       = delete;
          
-            PlukiPluki                        (PlukiPluki&&      plukiPluki) 
-                                                = delete;
+            PlukiPluki                                (PlukiPluki&&      plukiPluki) 
+                                                        = delete;
 
-            PlukiPluki operator=              (const PlukiPluki& plukiPluki) 
-                                                = delete;
+            PlukiPluki              operator=         (const PlukiPluki& plukiPluki) 
+                                                         = delete;
 
-            PlukiPluki operator=              (PlukiPluki&&      plukiPluki) 
-                                                = delete;
+            PlukiPluki              operator=         (PlukiPluki&&      plukiPluki) 
+                                                         = delete;
 
-            __amountRows getAmountRows        ()             
-                                                const;
+            bool                    isModeForRead     ()
+                                                         const;  
 
-            std::string  getRow               (__amountRows index)                      
-                                                const;
+            bool                    isModeForWrite    ()
+                                                         const;  
 
-            void         setRow               (__amountRows index, std::string newRow);
+            __amountRows             getAmountRows    ()             
+                                                         const;
 
-            std::vector<std::string> indexAll ()
-                                                const;
+            std::string              getRow           (__amountRows index)                      
+                                                         const;
 
-            void clearFile                    ();
+            void                     setRow           (__amountRows index, std::string newRow);
 
-            void insertRow                    (__amountRows index, std::string newRow);
+            std::vector<std::string> indexAll         ()
+                                                         const;
 
-            void deleteRow                    (__amountRows index);
+            void                     clearFile        ();
+
+            void                     insertRow        (__amountRows index, std::string newRow);
+
+            void                     deleteRow        (__amountRows index);
 
             // Call getRow
-            std::string  operator[]           (__amountRows index)
-                                                const;
+            std::string              operator[]       (__amountRows index)
+                                                         const;
 
             // Call setRow
-            void         operator()           (__amountRows index, std::string newStr);
+            void                     operator()       (__amountRows index, std::string newStr);
 
             // Call deleteRow
-            void         operator()           (__amountRows index);
+            void                     operator()       (__amountRows index);
 
             // Call getAmountRows
-            __amountRows operator()           ()
-                                                const;
+            __amountRows             operator()       ()
+                                                        const;
     };
 };
