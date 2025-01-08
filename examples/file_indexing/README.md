@@ -17,9 +17,9 @@ ar rcs ../../bin/PlukiPluki.a ../../bin/*.o
 ```
 
 ```bash
-clang++ main.cpp ../../bin/PlukiPluki.a -I ../../include -o dist/app.out
+clang++ main.cpp ../../bin/PlukiPluki.a -I ../../include -o build/app.out
 ```
 
 ```bash
-./dist/app.out
+./build/app.out
 ```

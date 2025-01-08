@@ -27,9 +27,9 @@ __PlukiPluki C++__ - это оболочкак над библиотекой *__
 2. __Создаём файловыу структуру:__
 
     ```bash
-    mkdir dist
+    mkdir build
     mkdir src
-    mkdir src/Libs
+    mkdir src/libs
     ```
 
     Ещё создадим файл main.cpp в директории src
@@ -38,12 +38,12 @@ __PlukiPluki C++__ - это оболочкак над библиотекой *__
     touch src/main.cpp
     ```
 
-3. __Копируем библиотеку в src/Libs__
+3. __Копируем библиотеку в src/libs__
 
     Переходим:
 
     ```bash
-    cd src/Libs
+    cd src/libs
     ```
 
     И клонируем репо:
@@ -142,7 +142,7 @@ __PlukiPluki C++__ - это оболочкак над библиотекой *__
 
     __Сама сборка__
     ```bash
-    clang++ src/main.cpp src/Libs/PlukiPluki-Lib/bin/PlukiPluki.a -o dist/app.out -I src/Libs/PlukiPluki-Lib/include
+    clang++ src/main.cpp src/libs/PlukiPluki-Lib/bin/PlukiPluki.a -o build/app.out -I src/libs/PlukiPluki-Lib/include
     ```
     Где,
 
@@ -150,16 +150,16 @@ __PlukiPluki C++__ - это оболочкак над библиотекой *__
 
     - __src/main.cpp__ - путь до файла, с точкой входа в наш проект
 
-    - __src/Libs/PlukiPluki-Lib/bin/PlukiPluki.a__ - путь до файла, с нашей скомпилированной библиотекой
+    - __src/libs/PlukiPluki-Lib/bin/PlukiPluki.a__ - путь до файла, с нашей скомпилированной библиотекой
 
-    - __-I src/Libs/PlukiPluki-Lib/include__ - опция, из-за которой нам не нужно будет указвать абсолютный путь до заголовка нашей либы в main.cpp. Вместо это можно будет просто написать имя заголовка и компилятор сам поймёт, что его надо брать из указанной в опци директории
+    - __-I src/libs/PlukiPluki-Lib/include__ - опция, из-за которой нам не нужно будет указвать абсолютный путь до заголовка нашей либы в main.cpp. Вместо это можно будет просто написать имя заголовка и компилятор сам поймёт, что его надо брать из указанной в опци директории
 
-    - __-o dist/app.out__ - имя выходного исполняемого файла, который создаст компилятор 
+    - __-o build/app.out__ - имя выходного исполняемого файла, который создаст компилятор 
 
     Теперь можно запустить и проверить результат:
 
     ```bash
-    ./dist/app.out
+    ./build/app.out
     ```
 
     Если у вас вышло что-то такое:
@@ -175,15 +175,15 @@ __PlukiPluki C++__ - это оболочкак над библиотекой *__
 И вводим команды
 
 ```bash
-clang++ -c src/Libs/PlukiPluki-Lib/src/PlukiPluki.cpp -o src/Libs/PlukiPluki-Lib/bin/PlukiPluki.o -I src/Libs/PlukiPluki-Lib/include
+clang++ -c src/libs/PlukiPluki-Lib/src/PlukiPluki.cpp -o src/libs/PlukiPluki-Lib/bin/PlukiPluki.o -I src/libs/PlukiPluki-Lib/include
 ```
 
 ```bash
-clang++ -c src/Libs/PlukiPluki-Lib/src/core/FileBase.cpp -o src/Libs/PlukiPluki-Lib/bin/FileBase.o
+clang++ -c src/libs/PlukiPluki-Lib/src/core/FileBase.cpp -o src/libs/PlukiPluki-Lib/bin/FileBase.o
 ```
 
 ```bash
-ar rcs src/Libs/PlukiPluki-Lib/bin/PlukiPluki.a src/Libs/PlukiPluki-Lib/bin/*.o
+ar rcs src/libs/PlukiPluki-Lib/bin/PlukiPluki.a src/libs/PlukiPluki-Lib/bin/*.o
 ```
 
 Если вы видите в каталоге bin файл Plukipluki.a:
